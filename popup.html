@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="extension-layout">
+      <header>
+        <input
+          type="search"
+          placeholder="Search templates..."
+          name="template-search"
+          id="template-search"
+          autofocus
+        />
+        <button id="add-template-button">Add Template</button>
+      </header>
+      <dialog id="add-template-modal">
+        <h1>Add Template</h1>
+        <button id="close-button">Close</button>
+        <input
+          id="template-title-input"
+          placeholder="Enter your template title..."
+          name="template-title"
+        />
+        <div id="template-text-area"></div>
+      </dialog>
+      <div id="template-options"></div>
+      <h3 id="no-templates" hidden>No Templates</h3>
+    </div>
+    <script src="src/popup/index.js" type="module"></script>
+  </body>
+</html>
