@@ -20,8 +20,8 @@ button {
 }
 
 #add-template-modal {
-  height: 650px;
-  width: 650px;
+  height: 100%;
+  width: 100%;
   padding: 9px;
   border-radius: 5px;
 }
@@ -63,7 +63,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 650px;
+  height: 550px;
   width: 650px;
   margin-top: 9px;
   padding-top: 3px;
@@ -81,7 +81,7 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 620px;
+  width: calc(100% - 30px);
   height: 20px;
   padding: 5px;
 }
@@ -96,7 +96,7 @@ header {
   flex-direction: column;
   align-items: left;
   padding-top: 10px;
-  width: 250px;
+  width: 100%;
   overflow-y: scroll;
   padding-left: 5px;
 }
@@ -113,7 +113,7 @@ header {
 }
 
 .template {
-  width: 240px;
+  width: calc(100% - 10px);
   padding-bottom: 7px;
   border-bottom: 1px dotted black;
 }
