@@ -2,7 +2,7 @@
 import './index.css'
 import 'suneditor/dist/css/suneditor.min.css'
 import suneditor from 'suneditor'
-import plugins, { template } from 'suneditor/src/plugins'
+import plugins from 'suneditor/src/plugins'
 
 //<====================DOM OBJECTS==================>
 const templateOptionsElement = document.getElementById('template-options')
@@ -13,6 +13,11 @@ const closeTemplateModalButton = document.getElementById('close-button')
 const addTemplateModalButton = document.getElementById('add-button')
 const templateTitleInput = document.getElementById('template-title-input')
 const missingTitleError = document.getElementById('missing-title-error')
+const missingTitleEditError = document.getElementById('missing-title-edit-error')
+const editTemplateModal = document.getElementById('edit-template-modal')
+const closeEditButton = document.getElementById('close-edit-button')
+const editTemplateTitleInput = document.getElementById('edit-template-title-input')
+const saveButton = document.querySelector('.save-edit-button')
 
 //<====================FUNCTIONS=====================>
 const addTemplate = (data, title) => {
@@ -27,8 +32,6 @@ const addTemplate = (data, title) => {
 
   request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
 
-  console.log('Add Template Controller Initiated')
-  console.log(request)
   request.addEventListener('success', (e) => {
     console.log('Open IDB Request Successful')
     const db = e.target.result
@@ -150,6 +153,47 @@ const deleteTemplate = (e) => {
   })
 }
 
+const editTemplate = (e, title, contents) => {
+  const dbName = 'template-data'
+  const storeName = 'templates'
+  const version = 4
+
+  const idKeypath = e.target.id
+
+  const request = indexedDB.open(dbName, version)
+  console.log('Open IDB Request made')
+
+  request.addEventListener('error', (e) => {
+    console.warn('IDB Request has an error: ' + e)
+    console.log(e)
+  })
+
+  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+
+  request.addEventListener('success', (e) => {
+    const db = e.target.result
+
+    const transaction = db.transaction(storeName, 'readwrite')
+    console.log('IDB Transaction Initiated')
+
+    const objectStore = transaction.objectStore(storeName)
+    const template = objectStore.get(idKeypath)
+
+    template.addEventListener('success', (e) => {
+      const template = e.target.result
+
+      template.title = title
+      template.content = contents
+
+      objectStore.put(template)
+    })
+
+    db.close()
+
+    loadTemplates()
+  })
+}
+
 const displayData = (data) => {
   templateOptionsElement.replaceChildren([])
   data.forEach((template) => {
@@ -158,6 +202,7 @@ const displayData = (data) => {
     const templateTitleElement = document.createElement('h2')
     const templateTextElement = document.createElement('div')
     const deleteTemplateButton = document.createElement('button')
+    const editTemplateButton = document.createElement('button')
 
     templateElement.setAttribute('class', 'template')
 
@@ -174,8 +219,23 @@ const displayData = (data) => {
       deleteTemplate(e)
     })
 
+    editTemplateButton.textContent = 'Edit'
+    editTemplateButton.setAttribute('class', 'edit-button')
+    editTemplateButton.setAttribute('id', template.id)
+    editTemplateButton.addEventListener('click', () => {
+      editTemplateModal.showModal()
+      saveButton.id = template.id
+      editTemplateTitleInput.value = template.title
+      suneditorEditElement.setContents(template.content)
+    })
+
     templateOptionsElement.append(templateElement)
-    templateElement.append(templateTitleElement, templateTextElement, deleteTemplateButton)
+    templateElement.append(
+      templateTitleElement,
+      templateTextElement,
+      deleteTemplateButton,
+      editTemplateButton,
+    )
   })
 
   if (templateOptionsElement.children.length === 0) {
@@ -190,7 +250,23 @@ const generateUID = () => {
 }
 
 //<====================STARTUP LOGIC================>
-const suneditorElement = suneditor.create('template-text-area', {
+const suneditorAddElement = suneditor.create('template-text-area', {
+  plugins: plugins,
+  buttonList: [
+    ['font', 'fontSize', 'formatBlock'],
+    ['paragraphStyle', 'blockquote'],
+    ['bold', 'underline', 'italic', 'strike'],
+    ['fontColor', 'hiliteColor', 'textStyle'],
+    ['removeFormat'],
+    ['align', 'horizontalRule', 'list', 'lineHeight'],
+    ['table', 'link', 'image', 'video'],
+    ['fullScreen', 'showBlocks'],
+    ['preview', 'print'],
+  ],
+  height: 340,
+})
+
+const suneditorEditElement = suneditor.create('template-edit-text-area', {
   plugins: plugins,
   buttonList: [
     ['font', 'fontSize', 'formatBlock'],
@@ -213,16 +289,14 @@ addTemplateButton.addEventListener('click', () => addTemplateModal.showModal())
 closeTemplateModalButton.addEventListener('click', () => {
   addTemplateModal.close()
   templateTitleInput.value = ''
-  suneditorElement.setContents('')
+  suneditorAddElement.setContents('')
 })
 addTemplateModalButton.addEventListener('click', () => {
-  console.log('hello')
   if (templateTitleInput.value !== '') {
-    console.log('Adding template')
-    addTemplate(suneditorElement.getContents(), templateTitleInput.value)
+    addTemplate(suneditorAddElement.getContents(), templateTitleInput.value)
     addTemplateModal.close()
     templateTitleInput.value = ''
-    suneditorElement.setContents('')
+    suneditorAddElement.setContents('')
     loadTemplates()
   } else {
     missingTitleError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
@@ -236,4 +310,28 @@ addTemplateModalButton.addEventListener('click', () => {
       })
     }, 2000)
   }
+})
+saveButton.addEventListener('click', (e) => {
+  if (editTemplateTitleInput.value !== '') {
+    editTemplate(e, editTemplateTitleInput.value, suneditorEditElement.getContents())
+    editTemplateModal.close()
+    editTemplateTitleInput.value = ''
+    suneditorEditElement.setContents('')
+  } else {
+    missingTitleEditError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
+      duration: 100,
+      fill: 'forwards',
+    })
+    setTimeout(() => {
+      missingTitleEditError.animate([{ opacity: '100%' }, { opacity: '0%' }], {
+        duration: 100,
+        fill: 'forwards',
+      })
+    }, 2000)
+  }
+})
+closeEditButton.addEventListener('click', () => {
+  editTemplateModal.close()
+  editTemplateTitleInput.value = ''
+  suneditorEditElement.setContents('')
 })

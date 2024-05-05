@@ -66,6 +66,53 @@ button {
   width: 97%;
 }
 
+#edit-template-modal {
+  height: 100%;
+  width: 100%;
+  padding: 9px;
+  position: fixed;
+  right: 50%;
+  translate: (0, -50%);
+}
+
+#edit-template-modal::backdrop {
+  display: none;
+}
+
+#edit-template-modal::-webkit-scrollbar {
+  visibility: hidden;
+}
+
+#edit-template-modal > h1 {
+  margin-bottom: 15px;
+}
+
+#close-edit-button,
+.save-edit-button {
+  position: absolute;
+  right: 30px;
+  top: 12px;
+  background-color: white;
+  text-decoration: underline;
+}
+
+.save-edit-button {
+  right: 75px;
+}
+
+#edit-template-title-input {
+  margin-bottom: 10px;
+  width: 95%;
+}
+
+#edit-template-title-input::placeholder {
+  color: grey;
+}
+
+#template-edit-text-area {
+  width: 97%;
+}
+
 #missing-title-error {
   position: fixed;
   top: 50%;
@@ -131,6 +178,7 @@ header {
   align-self: center;
   top: 80px;
   color: grey;
+  z-index: -1;
 }
 
 .template {
@@ -150,10 +198,14 @@ header {
   font-size: 10px;
 }
 
-.delete-button {
+.delete-button, .edit-button {
   text-decoration: underline;
   background-color: white;
   font-size: 12px;
   position: relative;
   left: 595px;
+}
+
+.edit-button {
+  left: 530px;
 }
