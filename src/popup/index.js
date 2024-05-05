@@ -10,14 +10,131 @@ const emptyTemplatesElement = document.getElementById('no-templates')
 const addTemplateButton = document.getElementById('add-template-button')
 const addTemplateModal = document.getElementById('add-template-modal')
 const closeTemplateModalButton = document.getElementById('close-button')
+const addTemplateModalButton = document.getElementById('add-button')
+const templateTitleInput = document.getElementById('template-title-input')
+const missingTitleError = document.getElementById('missing-title-error')
 
 //<====================FUNCTIONS=====================>
-const addTemplate = () => {
-  addTemplateModal.showModal()
+const addTemplate = (data, title) => {
+  const dbName = 'template-data'
+  const storeName = 'templates'
+  const version = 3
+
+  const request = indexedDB.open(dbName, version)
+  console.log('Open IDB Request made')
+
+  request.addEventListener('error', (e) => console.warn('IDB Request has an error: ' + e))
+
+  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+
+  request.addEventListener('success', (e) => {
+    console.log('Open IDB Request Successful')
+    const db = e.target.result
+
+    console.log('IDB Transaction Initiated')
+    const templateObjectStore = db.transaction(storeName, 'readwrite').objectStore(storeName)
+
+    console.log('IDB Transaction: Adding Data')
+    templateObjectStore.add({
+      title: title,
+      content: data,
+      id: generateUID(),
+    })
+    console.log('IDB Transaction: Complete!')
+
+    db.close()
+  })
+
+  request.addEventListener('upgradeneeded', (e) => {
+    const db = e.target.result
+    console.log('Open IDB Request Made, Upgrade Needed')
+
+    const objectStore = db.createObjectStore(storeName, { keyPath: 'id' })
+    console.log('IDB Object Store Created: ' + objectStore)
+
+    objectStore.transaction.oncomplete = (e) => {
+      const templateObjectStore = db.transaction(storeName, 'readwrite').objectStore(storeName)
+      console.log('IDB Transaction Initiated')
+
+      console.log('IDB Transaction: Adding Data')
+      templateObjectStore.add({
+        title: title,
+        content: data,
+        id: generateUID(),
+      })
+      console.log('IDB Transaction: Complete!')
+
+      db.close()
+    }
+  })
+}
+
+const loadTemplates = () => {
+  const dbName = 'template-data'
+  const storeName = 'templates'
+  const version = 3
+
+  const request = indexedDB.open(dbName, version)
+  console.log('Open IDB Request made')
+
+  request.addEventListener('success', (e) => {
+    const db = e.target.result
+
+    const transaction = db.transaction(storeName)
+
+    const objectStore = transaction.objectStore(storeName)
+    console.log('IDB Transaction Initiated')
+
+    console.log('IDB Transaction: Retrieving Data...')
+
+    let data = objectStore.getAll()
+
+    data.transaction.addEventListener('complete', (e) => {
+      data = data.result
+
+      console.log('IDB Transaction Complete:')
+      console.log(data)
+
+      db.close()
+
+      console.log('Displaying Data')
+      displayData(data)
+    })
+  })
+}
+
+const displayData = (data) => {
+  data.forEach((template) => {
+    console.log(template)
+    const templateElement = document.createElement('div')
+    const templateTitleElement = document.createElement('h2')
+    const templateTextElement = document.createElement('div')
+
+    templateElement.setAttribute('class', 'template')
+
+    templateTitleElement.textContent = template.title
+    templateTitleElement.setAttribute('class', 'template-title')
+
+    templateTextElement.innerHTML = template.content
+    templateTextElement.setAttribute('class', 'template-text')
+
+    templateOptionsElement.append(templateElement)
+    templateElement.append(templateTitleElement, templateTextElement)
+  })
+
+  if (templateOptionsElement.children.length === 0) {
+    emptyTemplatesElement.hidden = false
+  } else {
+    emptyTemplatesElement.hidden = true
+  }
+}
+
+const generateUID = () => {
+  return Date.now().toString(36) + Math.random().toString(36)
 }
 
 //<====================BUSINESS LOGIC================>
-suneditor.create('template-text-area', {
+const suneditorElement = suneditor.create('template-text-area', {
   plugins: plugins,
   buttonList: [
     ['font', 'fontSize', 'formatBlock'],
@@ -29,17 +146,33 @@ suneditor.create('template-text-area', {
     ['table', 'link', 'image', 'video'],
     ['fullScreen', 'showBlocks'],
     ['preview', 'print'],
-    ['save'],
   ],
-  height: 325,
+  height: 340,
 })
 
-if (templateOptionsElement.children.length === 0) {
-  emptyTemplatesElement.hidden = false
-} else {
-  emptyTemplatesElement.hidden = true
-}
+loadTemplates()
 
 //<===================EVENT LISTENERS================>
-addTemplateButton.addEventListener('click', () => addTemplate())
-closeTemplateModalButton.addEventListener('click', () => addTemplateModal.close())
+addTemplateButton.addEventListener('click', () => addTemplateModal.showModal())
+closeTemplateModalButton.addEventListener('click', () => {
+  addTemplateModal.close()
+  location.reload()
+})
+addTemplateModalButton.addEventListener('click', async () => {
+  if (templateTitleInput.value !== '') {
+    addTemplate(suneditorElement.getContents(), templateTitleInput.value)
+    addTemplateModal.close()
+    location.reload()
+  } else {
+    missingTitleError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
+      duration: 100,
+      fill: 'forwards',
+    })
+    setTimeout(() => {
+      missingTitleError.animate([{ opacity: '100%' }, { opacity: '0%' }], {
+        duration: 100,
+        fill: 'forwards',
+      })
+    }, 2000)
+  }
+})
