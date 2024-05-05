@@ -100,9 +100,11 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: calc(100% - 30px);
+  width: calc(100% - 20px);
   height: 20px;
   padding: 5px;
+  position: relative;
+  left: -5px;
 }
 
 #add-template-button {
@@ -132,8 +134,11 @@ header {
 }
 
 .template {
-  width: calc(100% - 10px);
+  width: 650px;
   padding-bottom: 7px;
+  padding-left: 2px;
+  margin-left: 3px;
+  margin-bottom: 3px;
   border-bottom: 1px dotted black;
 }
 
@@ -143,4 +148,12 @@ header {
 }
 .template-text {
   font-size: 10px;
+}
+
+.delete-button {
+  text-decoration: underline;
+  background-color: white;
+  font-size: 12px;
+  position: relative;
+  left: 595px;
 }

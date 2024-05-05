@@ -117,6 +117,39 @@ const loadTemplates = () => {
   })
 }
 
+const deleteTemplate = (e) => {
+  const dbName = 'template-data'
+  const storeName = 'templates'
+  const version = 4
+
+  const idKeypath = e.target.id
+
+  const request = indexedDB.open(dbName, version)
+  console.log('Open IDB Request made')
+
+  request.addEventListener('error', (e) => {
+    console.warn('IDB Request has an error: ' + e)
+    console.log(e)
+  })
+
+  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+
+  request.addEventListener('success', (e) => {
+    const db = e.target.result
+
+    const transaction = db.transaction(storeName, 'readwrite')
+    console.log('IDB Transaction Initiated')
+
+    const request = transaction.objectStore(storeName).delete(idKeypath)
+
+    request.addEventListener('success', () => console.log('IDB Transaction Completed'))
+
+    db.close()
+
+    loadTemplates()
+  })
+}
+
 const displayData = (data) => {
   templateOptionsElement.replaceChildren([])
   data.forEach((template) => {
@@ -124,6 +157,7 @@ const displayData = (data) => {
     const templateElement = document.createElement('div')
     const templateTitleElement = document.createElement('h2')
     const templateTextElement = document.createElement('div')
+    const deleteTemplateButton = document.createElement('button')
 
     templateElement.setAttribute('class', 'template')
 
@@ -133,8 +167,15 @@ const displayData = (data) => {
     templateTextElement.innerHTML = template.content
     templateTextElement.setAttribute('class', 'template-text')
 
+    deleteTemplateButton.textContent = 'Delete'
+    deleteTemplateButton.setAttribute('class', 'delete-button')
+    deleteTemplateButton.setAttribute('id', template.id)
+    deleteTemplateButton.addEventListener('click', (e) => {
+      deleteTemplate(e)
+    })
+
     templateOptionsElement.append(templateElement)
-    templateElement.append(templateTitleElement, templateTextElement)
+    templateElement.append(templateTitleElement, templateTextElement, deleteTemplateButton)
   })
 
   if (templateOptionsElement.children.length === 0) {
@@ -148,7 +189,7 @@ const generateUID = () => {
   return Date.now().toString(36) + Math.random().toString(36)
 }
 
-//<====================BUSINESS LOGIC================>
+//<====================STARTUP LOGIC================>
 const suneditorElement = suneditor.create('template-text-area', {
   plugins: plugins,
   buttonList: [
