@@ -2,7 +2,7 @@
 import './index.css'
 import 'suneditor/dist/css/suneditor.min.css'
 import suneditor from 'suneditor'
-import plugins from 'suneditor/src/plugins'
+import plugins, { template } from 'suneditor/src/plugins'
 
 //<====================DOM OBJECTS==================>
 const templateOptionsElement = document.getElementById('template-options')
@@ -18,7 +18,7 @@ const missingTitleError = document.getElementById('missing-title-error')
 const addTemplate = (data, title) => {
   const dbName = 'template-data'
   const storeName = 'templates'
-  const version = 3
+  const version = 4
 
   const request = indexedDB.open(dbName, version)
   console.log('Open IDB Request made')
@@ -27,6 +27,8 @@ const addTemplate = (data, title) => {
 
   request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
 
+  console.log('Add Template Controller Initiated')
+  console.log(request)
   request.addEventListener('success', (e) => {
     console.log('Open IDB Request Successful')
     const db = e.target.result
@@ -72,14 +74,19 @@ const addTemplate = (data, title) => {
 const loadTemplates = () => {
   const dbName = 'template-data'
   const storeName = 'templates'
-  const version = 3
+  const version = 4
 
   const request = indexedDB.open(dbName, version)
   console.log('Open IDB Request made')
 
+  request.addEventListener('error', (e) => {
+    console.warn('IDB Request has an error: ' + e)
+    console.log(e)
+  })
+
+  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
   request.addEventListener('success', (e) => {
     const db = e.target.result
-
     const transaction = db.transaction(storeName)
 
     const objectStore = transaction.objectStore(storeName)
@@ -101,9 +108,17 @@ const loadTemplates = () => {
       displayData(data)
     })
   })
+
+  request.addEventListener('upgradeneeded', (e) => {
+    const db = e.target.result
+    db.createObjectStore(storeName, { keyPath: 'id' })
+
+    db.close()
+  })
 }
 
 const displayData = (data) => {
+  templateOptionsElement.replaceChildren([])
   data.forEach((template) => {
     console.log(template)
     const templateElement = document.createElement('div')
@@ -156,13 +171,18 @@ loadTemplates()
 addTemplateButton.addEventListener('click', () => addTemplateModal.showModal())
 closeTemplateModalButton.addEventListener('click', () => {
   addTemplateModal.close()
-  location.reload()
+  templateTitleInput.value = ''
+  suneditorElement.setContents('')
 })
-addTemplateModalButton.addEventListener('click', async () => {
+addTemplateModalButton.addEventListener('click', () => {
+  console.log('hello')
   if (templateTitleInput.value !== '') {
+    console.log('Adding template')
     addTemplate(suneditorElement.getContents(), templateTitleInput.value)
     addTemplateModal.close()
-    location.reload()
+    templateTitleInput.value = ''
+    suneditorElement.setContents('')
+    loadTemplates()
   } else {
     missingTitleError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
       duration: 100,
