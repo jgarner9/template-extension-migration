@@ -3,6 +3,7 @@ import './index.css'
 import 'suneditor/dist/css/suneditor.min.css'
 import suneditor from 'suneditor'
 import plugins from 'suneditor/src/plugins'
+import { htmlToText } from 'html-to-text'
 
 //<====================DOM OBJECTS==================>
 const templateOptionsElement = document.getElementById('template-options')
@@ -194,6 +195,49 @@ const editTemplate = (e, title, contents) => {
   })
 }
 
+const copyTemplate = (e) => {
+  const dbName = 'template-data'
+  const storeName = 'templates'
+  const version = 4
+
+  const idKeypath = e.target.id
+
+  const request = indexedDB.open(dbName, version)
+  console.log('Open IDB Request made')
+
+  request.addEventListener('error', (e) => {
+    console.warn('IDB Request has an error: ' + e)
+    console.log(e)
+  })
+
+  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+
+  request.addEventListener('success', (e) => {
+    const db = e.target.result
+
+    const transaction = db.transaction(storeName)
+    console.log('IDB Transaction Initiated')
+
+    const objectStore = transaction.objectStore(storeName)
+    const template = objectStore.get(idKeypath)
+
+    template.addEventListener('success', (e) => {
+      const template = e.target.result
+      const contents = template.content
+
+      const contentsBlob = new Blob([contents], { type: 'text/html' })
+      const data = new ClipboardItem({
+        ["text/html"]: contentsBlob
+      })
+
+      navigator.clipboard.write(data)
+      console.log('Copied! ' + contents)
+
+      db.close()
+    })
+  })
+}
+
 const displayData = (data) => {
   templateOptionsElement.replaceChildren([])
   data.forEach((template) => {
@@ -203,6 +247,7 @@ const displayData = (data) => {
     const templateTextElement = document.createElement('div')
     const deleteTemplateButton = document.createElement('button')
     const editTemplateButton = document.createElement('button')
+    const copyTemplateButton = document.createElement('button')
 
     templateElement.setAttribute('class', 'template')
 
@@ -229,12 +274,20 @@ const displayData = (data) => {
       suneditorEditElement.setContents(template.content)
     })
 
+    copyTemplateButton.textContent = 'Copy'
+    copyTemplateButton.setAttribute('class', 'copy-button')
+    copyTemplateButton.setAttribute('id', template.id)
+    copyTemplateButton.addEventListener('click', (e) => {
+      copyTemplate(e)
+    })
+
     templateOptionsElement.append(templateElement)
     templateElement.append(
       templateTitleElement,
       templateTextElement,
       deleteTemplateButton,
       editTemplateButton,
+      copyTemplateButton,
     )
   })
 

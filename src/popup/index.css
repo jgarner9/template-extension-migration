@@ -198,7 +198,7 @@ header {
   font-size: 10px;
 }
 
-.delete-button, .edit-button {
+.delete-button, .edit-button, .copy-button {
   text-decoration: underline;
   background-color: white;
   font-size: 12px;
@@ -208,4 +208,8 @@ header {
 
 .edit-button {
   left: 530px;
+}
+
+.copy-button {
+  left: 470px;
 }
