@@ -19,6 +19,7 @@ const editTemplateModal = document.getElementById('edit-template-modal')
 const closeEditButton = document.getElementById('close-edit-button')
 const editTemplateTitleInput = document.getElementById('edit-template-title-input')
 const saveButton = document.querySelector('.save-edit-button')
+const searchElement = document.getElementById('template-search')
 
 //<====================FUNCTIONS=====================>
 const addTemplate = (data, title) => {
@@ -227,7 +228,7 @@ const copyTemplate = (e) => {
 
       const contentsBlob = new Blob([contents], { type: 'text/html' })
       const data = new ClipboardItem({
-        ["text/html"]: contentsBlob
+        ['text/html']: contentsBlob,
       })
 
       navigator.clipboard.write(data)
@@ -240,55 +241,60 @@ const copyTemplate = (e) => {
 
 const displayData = (data) => {
   templateOptionsElement.replaceChildren([])
+  const search = searchElement.value
+
   data.forEach((template) => {
     console.log(template)
-    const templateElement = document.createElement('div')
-    const templateTitleElement = document.createElement('h2')
-    const templateTextElement = document.createElement('div')
-    const deleteTemplateButton = document.createElement('button')
-    const editTemplateButton = document.createElement('button')
-    const copyTemplateButton = document.createElement('button')
 
-    templateElement.setAttribute('class', 'template')
+    if (template.content.includes(search) || template.title.includes(search) || search === '') {
+      const templateElement = document.createElement('div')
+      const templateTitleElement = document.createElement('h2')
+      const templateTextElement = document.createElement('div')
+      const deleteTemplateButton = document.createElement('button')
+      const editTemplateButton = document.createElement('button')
+      const copyTemplateButton = document.createElement('button')
 
-    templateTitleElement.textContent = template.title
-    templateTitleElement.setAttribute('class', 'template-title')
+      templateElement.setAttribute('class', 'template')
 
-    templateTextElement.innerHTML = template.content
-    templateTextElement.setAttribute('class', 'template-text')
+      templateTitleElement.textContent = template.title
+      templateTitleElement.setAttribute('class', 'template-title')
 
-    deleteTemplateButton.textContent = 'Delete'
-    deleteTemplateButton.setAttribute('class', 'delete-button')
-    deleteTemplateButton.setAttribute('id', template.id)
-    deleteTemplateButton.addEventListener('click', (e) => {
-      deleteTemplate(e)
-    })
+      templateTextElement.innerHTML = template.content
+      templateTextElement.setAttribute('class', 'template-text')
 
-    editTemplateButton.textContent = 'Edit'
-    editTemplateButton.setAttribute('class', 'edit-button')
-    editTemplateButton.setAttribute('id', template.id)
-    editTemplateButton.addEventListener('click', () => {
-      editTemplateModal.showModal()
-      saveButton.id = template.id
-      editTemplateTitleInput.value = template.title
-      suneditorEditElement.setContents(template.content)
-    })
+      deleteTemplateButton.textContent = 'Delete'
+      deleteTemplateButton.setAttribute('class', 'delete-button')
+      deleteTemplateButton.setAttribute('id', template.id)
+      deleteTemplateButton.addEventListener('click', (e) => {
+        deleteTemplate(e)
+      })
 
-    copyTemplateButton.textContent = 'Copy'
-    copyTemplateButton.setAttribute('class', 'copy-button')
-    copyTemplateButton.setAttribute('id', template.id)
-    copyTemplateButton.addEventListener('click', (e) => {
-      copyTemplate(e)
-    })
+      editTemplateButton.textContent = 'Edit'
+      editTemplateButton.setAttribute('class', 'edit-button')
+      editTemplateButton.setAttribute('id', template.id)
+      editTemplateButton.addEventListener('click', () => {
+        editTemplateModal.showModal()
+        saveButton.id = template.id
+        editTemplateTitleInput.value = template.title
+        suneditorEditElement.setContents(template.content)
+      })
 
-    templateOptionsElement.append(templateElement)
-    templateElement.append(
-      templateTitleElement,
-      templateTextElement,
-      deleteTemplateButton,
-      editTemplateButton,
-      copyTemplateButton,
-    )
+      copyTemplateButton.textContent = 'Copy'
+      copyTemplateButton.setAttribute('class', 'copy-button')
+      copyTemplateButton.setAttribute('id', template.id)
+      copyTemplateButton.addEventListener('click', (e) => {
+        copyTemplate(e)
+      })
+
+      templateOptionsElement.append(templateElement)
+      templateElement.append(
+        templateTitleElement,
+        templateTextElement,
+        deleteTemplateButton,
+        editTemplateButton,
+        copyTemplateButton,
+      )
+    }
   })
 
   if (templateOptionsElement.children.length === 0) {
@@ -387,4 +393,8 @@ closeEditButton.addEventListener('click', () => {
   editTemplateModal.close()
   editTemplateTitleInput.value = ''
   suneditorEditElement.setContents('')
+})
+searchElement.addEventListener('keydown', () => {
+  console.log("Herro")
+  loadTemplates()
 })
