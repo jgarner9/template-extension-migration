@@ -28,48 +28,34 @@ const addTemplate = (data, title) => {
   const version = 4
 
   const request = indexedDB.open(dbName, version)
-  console.log('Open IDB Request made')
-
-  request.addEventListener('error', (e) => console.warn('IDB Request has an error: ' + e))
-
-  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
 
   request.addEventListener('success', (e) => {
-    console.log('Open IDB Request Successful')
     const db = e.target.result
 
-    console.log('IDB Transaction Initiated')
     const templateObjectStore = db.transaction(storeName, 'readwrite').objectStore(storeName)
 
-    console.log('IDB Transaction: Adding Data')
     templateObjectStore.add({
       title: title,
       content: data,
       id: generateUID(),
     })
-    console.log('IDB Transaction: Complete!')
 
     db.close()
   })
 
   request.addEventListener('upgradeneeded', (e) => {
     const db = e.target.result
-    console.log('Open IDB Request Made, Upgrade Needed')
 
     const objectStore = db.createObjectStore(storeName, { keyPath: 'id' })
-    console.log('IDB Object Store Created: ' + objectStore)
 
     objectStore.transaction.oncomplete = (e) => {
       const templateObjectStore = db.transaction(storeName, 'readwrite').objectStore(storeName)
-      console.log('IDB Transaction Initiated')
 
-      console.log('IDB Transaction: Adding Data')
       templateObjectStore.add({
         title: title,
         content: data,
         id: generateUID(),
       })
-      console.log('IDB Transaction: Complete!')
 
       db.close()
     }
@@ -82,34 +68,22 @@ const loadTemplates = () => {
   const version = 4
 
   const request = indexedDB.open(dbName, version)
-  console.log('Open IDB Request made')
 
-  request.addEventListener('error', (e) => {
-    console.warn('IDB Request has an error: ' + e)
-    console.log(e)
-  })
+  request.addEventListener('error', (e) => {})
 
-  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
   request.addEventListener('success', (e) => {
     const db = e.target.result
     const transaction = db.transaction(storeName)
 
     const objectStore = transaction.objectStore(storeName)
-    console.log('IDB Transaction Initiated')
-
-    console.log('IDB Transaction: Retrieving Data...')
 
     let data = objectStore.getAll()
 
     data.transaction.addEventListener('complete', (e) => {
       data = data.result
 
-      console.log('IDB Transaction Complete:')
-      console.log(data)
-
       db.close()
 
-      console.log('Displaying Data')
       displayData(data)
     })
   })
@@ -130,24 +104,15 @@ const deleteTemplate = (e) => {
   const idKeypath = e.target.id
 
   const request = indexedDB.open(dbName, version)
-  console.log('Open IDB Request made')
 
-  request.addEventListener('error', (e) => {
-    console.warn('IDB Request has an error: ' + e)
-    console.log(e)
-  })
-
-  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+  request.addEventListener('error', (e) => {})
 
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
     const transaction = db.transaction(storeName, 'readwrite')
-    console.log('IDB Transaction Initiated')
 
-    const request = transaction.objectStore(storeName).delete(idKeypath)
-
-    request.addEventListener('success', () => console.log('IDB Transaction Completed'))
+    transaction.objectStore(storeName).delete(idKeypath)
 
     db.close()
 
@@ -163,20 +128,13 @@ const editTemplate = (e, title, contents) => {
   const idKeypath = e.target.id
 
   const request = indexedDB.open(dbName, version)
-  console.log('Open IDB Request made')
 
-  request.addEventListener('error', (e) => {
-    console.warn('IDB Request has an error: ' + e)
-    console.log(e)
-  })
-
-  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+  request.addEventListener('error', (e) => {})
 
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
     const transaction = db.transaction(storeName, 'readwrite')
-    console.log('IDB Transaction Initiated')
 
     const objectStore = transaction.objectStore(storeName)
     const template = objectStore.get(idKeypath)
@@ -204,20 +162,13 @@ const copyTemplate = (e) => {
   const idKeypath = e.target.id
 
   const request = indexedDB.open(dbName, version)
-  console.log('Open IDB Request made')
 
-  request.addEventListener('error', (e) => {
-    console.warn('IDB Request has an error: ' + e)
-    console.log(e)
-  })
-
-  request.addEventListener('blocked', (e) => console.warn('IDB Request was blocked: ' + e))
+  request.addEventListener('error', (e) => {})
 
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
     const transaction = db.transaction(storeName)
-    console.log('IDB Transaction Initiated')
 
     const objectStore = transaction.objectStore(storeName)
     const template = objectStore.get(idKeypath)
@@ -231,8 +182,7 @@ const copyTemplate = (e) => {
         ['text/html']: contentsBlob,
       })
 
-      navigator.clipboard.write(data)
-      console.log('Copied! ' + contents)
+      navigator.clipboard.write([data])
 
       db.close()
     })
@@ -244,8 +194,6 @@ const displayData = (data) => {
   const search = searchElement.value
 
   data.forEach((template) => {
-    console.log(template)
-
     if (template.content.includes(search) || template.title.includes(search) || search === '') {
       const templateElement = document.createElement('div')
       const templateTitleElement = document.createElement('h2')
@@ -395,6 +343,5 @@ closeEditButton.addEventListener('click', () => {
   suneditorEditElement.setContents('')
 })
 searchElement.addEventListener('keydown', () => {
-  console.log("Herro")
   loadTemplates()
 })
