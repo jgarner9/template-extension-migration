@@ -30,9 +30,7 @@
     "vite": "^4.4.11"
   },
   "dependencies": {
-    "@tinymce/tinymce-webcomponent": "^2.1.0",
     "html-to-text": "^9.0.5",
-    "quill": "^2.0.0",
     "suneditor": "^2.46.2"
   }
 }
