@@ -3,6 +3,9 @@ import './index.css'
 import 'suneditor/dist/css/suneditor.min.css'
 import suneditor from 'suneditor'
 import plugins from 'suneditor/src/plugins'
+import trash_icon from '/Users/jgarner/Desktop/Programming/template-extension-migration/src/assets/trash_icon.png'
+import edit_icon from '/Users/jgarner/Desktop/Programming/template-extension-migration/src/assets/edit_button.png'
+import copy_icon from '/Users/jgarner/Desktop/Programming/template-extension-migration/src/assets/copy_button.png'
 import { htmlToText } from 'html-to-text'
 
 //<====================DOM OBJECTS==================>
@@ -178,8 +181,10 @@ const copyTemplate = (e) => {
       const contents = template.content
 
       const contentsBlob = new Blob([contents], { type: 'text/html' })
+      const contentsText = new Blob([htmlToText(contents)], { type: 'text/plain' })
       const data = new ClipboardItem({
         ['text/html']: contentsBlob,
+        ['text/plain']: contentsText,
       })
 
       navigator.clipboard.write([data])
@@ -197,10 +202,13 @@ const displayData = (data) => {
     if (template.content.includes(search) || template.title.includes(search) || search === '') {
       const templateElement = document.createElement('div')
       const templateTitleElement = document.createElement('h2')
-      const templateTextElement = document.createElement('div')
+      const templateTextElement = document.createElement('p')
       const deleteTemplateButton = document.createElement('button')
+      const deleteTemplateButtonIcon = document.createElement('img')
       const editTemplateButton = document.createElement('button')
+      const editTemplateButtonIcon = document.createElement('img')
       const copyTemplateButton = document.createElement('button')
+      const copyTemplateButtonIcon = document.createElement('img')
 
       templateElement.setAttribute('class', 'template')
 
@@ -210,14 +218,15 @@ const displayData = (data) => {
       templateTextElement.innerHTML = template.content
       templateTextElement.setAttribute('class', 'template-text')
 
-      deleteTemplateButton.textContent = 'Delete'
       deleteTemplateButton.setAttribute('class', 'delete-button')
       deleteTemplateButton.setAttribute('id', template.id)
+      deleteTemplateButtonIcon.setAttribute('src', trash_icon)
+      deleteTemplateButtonIcon.setAttribute('id', template.id)
+      deleteTemplateButton.append(deleteTemplateButtonIcon)
       deleteTemplateButton.addEventListener('click', (e) => {
         deleteTemplate(e)
       })
 
-      editTemplateButton.textContent = 'Edit'
       editTemplateButton.setAttribute('class', 'edit-button')
       editTemplateButton.setAttribute('id', template.id)
       editTemplateButton.addEventListener('click', () => {
@@ -226,21 +235,25 @@ const displayData = (data) => {
         editTemplateTitleInput.value = template.title
         suneditorEditElement.setContents(template.content)
       })
+      editTemplateButtonIcon.setAttribute('src', edit_icon)
+      editTemplateButton.append(editTemplateButtonIcon)
 
-      copyTemplateButton.textContent = 'Copy'
       copyTemplateButton.setAttribute('class', 'copy-button')
       copyTemplateButton.setAttribute('id', template.id)
       copyTemplateButton.addEventListener('click', (e) => {
         copyTemplate(e)
       })
+      copyTemplateButtonIcon.setAttribute('src', copy_icon)
+      copyTemplateButtonIcon.setAttribute('id', template.id)
+      copyTemplateButton.append(copyTemplateButtonIcon)
 
       templateOptionsElement.append(templateElement)
       templateElement.append(
-        templateTitleElement,
-        templateTextElement,
         deleteTemplateButton,
         editTemplateButton,
         copyTemplateButton,
+        templateTitleElement,
+        templateTextElement,
       )
     }
   })
@@ -270,7 +283,8 @@ const suneditorAddElement = suneditor.create('template-text-area', {
     ['fullScreen', 'showBlocks'],
     ['preview', 'print'],
   ],
-  height: 340,
+  height: 370,
+  defaultStyle: 'background-color: #FDDEB7; border-radius: 5px;',
 })
 
 const suneditorEditElement = suneditor.create('template-edit-text-area', {
@@ -286,7 +300,8 @@ const suneditorEditElement = suneditor.create('template-edit-text-area', {
     ['fullScreen', 'showBlocks'],
     ['preview', 'print'],
   ],
-  height: 340,
+  height: 370,
+  defaultStyle: 'background-color: #FDDEB7; border-radius: 5px;',
 })
 
 loadTemplates()
