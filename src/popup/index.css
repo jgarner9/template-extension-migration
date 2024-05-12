@@ -45,7 +45,9 @@ button {
 }
 
 #close-button,
-#add-button, #close-edit-button, .save-edit-button {
+#add-button,
+#close-edit-button,
+.save-edit-button {
   position: absolute;
   right: 20px;
   top: 12px;
@@ -53,11 +55,13 @@ button {
   color: #a16e4b;
 }
 
-#add-button, .save-edit-button {
+#add-button,
+.save-edit-button {
   right: 65px;
 }
 
-#template-title-input, #edit-template-title-input {
+#template-title-input,
+#edit-template-title-input {
   margin-bottom: 13px;
   margin-left: 10px;
   background: none;
@@ -67,15 +71,18 @@ button {
   width: 610px;
 }
 
-#template-title-input::placeholder, #edit-template-title-input::placeholder {
+#template-title-input::placeholder,
+#edit-template-title-input::placeholder {
   color: #a16e4b;
 }
 
-#template-text-area, #template-edit-text-area {
+#template-text-area,
+#template-edit-text-area {
   width: 100%;
 }
 
-#missing-title-error, #missing-title-edit-error {
+#missing-title-error,
+#missing-title-edit-error {
   position: fixed;
   top: 50%;
   right: 50%;
@@ -130,6 +137,7 @@ header {
 
 #template-options {
   display: flex;
+  flex-direction: column;
   padding-top: 10px;
   width: 100%;
   overflow-y: scroll;
@@ -137,7 +145,7 @@ header {
 }
 
 #template-options::-webkit-scrollbar {
-  visibility: hidden;
+  display: none;
 }
 
 #no-templates {
@@ -149,7 +157,7 @@ header {
 }
 
 .template {
-  width: 650px;
+  width: 97%;
   padding-bottom: 7px;
   padding-left: 2px;
   margin-left: 3px;
@@ -173,6 +181,8 @@ header {
   max-height: 100px;
   width: 630px;
   text-wrap: wrap;
+  overflow: hidden;
+  margin-bottom: 3.5px;
 }
 
 .delete-button,
