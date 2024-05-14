@@ -26,12 +26,15 @@ const searchElement = document.getElementById('template-search')
 
 //<====================FUNCTIONS=====================>
 const addTemplate = (data, title) => {
+  //IDB options
   const dbName = 'template-data'
   const storeName = 'templates'
   const version = 4
 
+  //Open IDB Request
   const request = indexedDB.open(dbName, version)
 
+  //Successful IDB Request logic: open store, add template with UID
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
@@ -46,6 +49,7 @@ const addTemplate = (data, title) => {
     db.close()
   })
 
+  //Upgrade IDB Request logic: create store, open it, add template with UID
   request.addEventListener('upgradeneeded', (e) => {
     const db = e.target.result
 
@@ -66,14 +70,15 @@ const addTemplate = (data, title) => {
 }
 
 const loadTemplates = () => {
+  //IDB Options
   const dbName = 'template-data'
   const storeName = 'templates'
   const version = 4
 
+  //Open IDB Request
   const request = indexedDB.open(dbName, version)
 
-  request.addEventListener('error', (e) => {})
-
+  //Successful Open IDB Request logic: get all data from object store, run displayData with data
   request.addEventListener('success', (e) => {
     const db = e.target.result
     const transaction = db.transaction(storeName)
@@ -91,6 +96,7 @@ const loadTemplates = () => {
     })
   })
 
+  //Upgrade Needed IDB Request logic: createObjectStore with keypath as the id
   request.addEventListener('upgradeneeded', (e) => {
     const db = e.target.result
     db.createObjectStore(storeName, { keyPath: 'id' })
@@ -100,16 +106,18 @@ const loadTemplates = () => {
 }
 
 const deleteTemplate = (e) => {
+  //IDB Options
   const dbName = 'template-data'
   const storeName = 'templates'
   const version = 4
 
+  //keypath selector
   const idKeypath = e.target.id
 
+  //IDB Open Request
   const request = indexedDB.open(dbName, version)
 
-  request.addEventListener('error', (e) => {})
-
+  //Successful IDB Open request logic: open object store, delete using keypath selector, run loadTemplates to update display
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
@@ -124,16 +132,18 @@ const deleteTemplate = (e) => {
 }
 
 const editTemplate = (e, title, contents) => {
+  //IDB Options
   const dbName = 'template-data'
   const storeName = 'templates'
   const version = 4
 
+  //keypath selector
   const idKeypath = e.target.id
 
+  //Open IDB Request
   const request = indexedDB.open(dbName, version)
 
-  request.addEventListener('error', (e) => {})
-
+  //Successful IDB Open Request logic: open objectStore, get the template with keypath selector, make the change, and overwrite using 'put', run loadTemplates
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
@@ -158,16 +168,18 @@ const editTemplate = (e, title, contents) => {
 }
 
 const copyTemplate = (e) => {
+  //IDB Options
   const dbName = 'template-data'
   const storeName = 'templates'
   const version = 4
 
+  //keypath selector
   const idKeypath = e.target.id
 
+  //Open IDB Request
   const request = indexedDB.open(dbName, version)
 
-  request.addEventListener('error', (e) => {})
-
+  //Successful Open IDB Request logic: open object store, retrieve template with keypath selector, create html and text blobs for clipboard, copy to clipboard
   request.addEventListener('success', (e) => {
     const db = e.target.result
 
@@ -195,11 +207,17 @@ const copyTemplate = (e) => {
 }
 
 const displayData = (data) => {
+  //empties the templateOptions object to be repopulated
   templateOptionsElement.replaceChildren([])
+
+  //get current search
   const search = searchElement.value
 
+  //iterate through data argument, create template elements, append to templateOptions
   data.forEach((template) => {
+    //check if search is populated, or if it's included in title or editor contents
     if (template.content.includes(search) || template.title.includes(search) || search === '') {
+      //create elements for template model
       const templateElement = document.createElement('div')
       const templateTitleElement = document.createElement('h2')
       const templateTextElement = document.createElement('p')
@@ -210,14 +228,18 @@ const displayData = (data) => {
       const copyTemplateButton = document.createElement('button')
       const copyTemplateButtonIcon = document.createElement('img')
 
+      //main template model set up
       templateElement.setAttribute('class', 'template')
 
+      //template title element set up
       templateTitleElement.textContent = template.title
       templateTitleElement.setAttribute('class', 'template-title')
 
+      //template text element set up
       templateTextElement.innerHTML = template.content
       templateTextElement.setAttribute('class', 'template-text')
 
+      //delete button set up
       deleteTemplateButton.setAttribute('class', 'delete-button')
       deleteTemplateButton.setAttribute('id', template.id)
       deleteTemplateButtonIcon.setAttribute('src', trash_icon)
@@ -227,6 +249,7 @@ const displayData = (data) => {
         deleteTemplate(e)
       })
 
+      //edit button set up
       editTemplateButton.setAttribute('class', 'edit-button')
       editTemplateButton.setAttribute('id', template.id)
       editTemplateButton.addEventListener('click', () => {
@@ -238,6 +261,7 @@ const displayData = (data) => {
       editTemplateButtonIcon.setAttribute('src', edit_icon)
       editTemplateButton.append(editTemplateButtonIcon)
 
+      //copy button set up
       copyTemplateButton.setAttribute('class', 'copy-button')
       copyTemplateButton.setAttribute('id', template.id)
       copyTemplateButton.addEventListener('click', (e) => {
@@ -247,6 +271,7 @@ const displayData = (data) => {
       copyTemplateButtonIcon.setAttribute('id', template.id)
       copyTemplateButton.append(copyTemplateButtonIcon)
 
+      //append elements to template model, append to template options
       templateOptionsElement.append(templateElement)
       templateElement.append(
         deleteTemplateButton,
@@ -258,6 +283,7 @@ const displayData = (data) => {
     }
   })
 
+  //if there are no templates, display the 'No Templates' message
   if (templateOptionsElement.children.length === 0) {
     emptyTemplatesElement.hidden = false
   } else {
@@ -266,10 +292,12 @@ const displayData = (data) => {
 }
 
 const generateUID = () => {
+  //generate UID based on current date and a random number
   return Date.now().toString(36) + Math.random().toString(36)
 }
 
 //<====================STARTUP LOGIC================>
+//create editor for adding template
 const suneditorAddElement = suneditor.create('template-text-area', {
   plugins: plugins,
   buttonList: [
@@ -287,6 +315,7 @@ const suneditorAddElement = suneditor.create('template-text-area', {
   defaultStyle: 'background-color: #FDDEB7; border-radius: 5px;',
 })
 
+//create editor for editing template
 const suneditorEditElement = suneditor.create('template-edit-text-area', {
   plugins: plugins,
   buttonList: [
@@ -304,23 +333,34 @@ const suneditorEditElement = suneditor.create('template-edit-text-area', {
   defaultStyle: 'background-color: #FDDEB7; border-radius: 5px;',
 })
 
+//init load for display
 loadTemplates()
 
 //<===================EVENT LISTENERS================>
+//shows add template modal
 addTemplateButton.addEventListener('click', () => addTemplateModal.showModal())
+
+//close add template modal
 closeTemplateModalButton.addEventListener('click', () => {
   addTemplateModal.close()
+
+  //reset modal contents
   templateTitleInput.value = ''
   suneditorAddElement.setContents('')
 })
+
+//adds template to IDB
 addTemplateModalButton.addEventListener('click', () => {
   if (templateTitleInput.value !== '') {
     addTemplate(suneditorAddElement.getContents(), templateTitleInput.value)
     addTemplateModal.close()
+
+    //reset modal contents
     templateTitleInput.value = ''
     suneditorAddElement.setContents('')
     loadTemplates()
   } else {
+    //animate the missing title error if title is empty
     missingTitleError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
       duration: 100,
       fill: 'forwards',
@@ -333,13 +373,18 @@ addTemplateModalButton.addEventListener('click', () => {
     }, 2000)
   }
 })
+
+//saves template after edit
 saveButton.addEventListener('click', (e) => {
   if (editTemplateTitleInput.value !== '') {
     editTemplate(e, editTemplateTitleInput.value, suneditorEditElement.getContents())
     editTemplateModal.close()
+
+    //reset modal contents
     editTemplateTitleInput.value = ''
     suneditorEditElement.setContents('')
   } else {
+    //animate the missing title error if title is empty
     missingTitleEditError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
       duration: 100,
       fill: 'forwards',
@@ -352,11 +397,17 @@ saveButton.addEventListener('click', (e) => {
     }, 2000)
   }
 })
+
+//close edit modal
 closeEditButton.addEventListener('click', () => {
   editTemplateModal.close()
+
+  //reset modal contents
   editTemplateTitleInput.value = ''
   suneditorEditElement.setContents('')
 })
+
+//filter through list to display
 searchElement.addEventListener('keydown', () => {
   loadTemplates()
 })
