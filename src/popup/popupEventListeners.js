@@ -33,7 +33,7 @@ const popupEventListeners = () => {
       ['preview', 'print'],
     ],
     height: 370,
-    defaultStyle: 'background-color: #FDDEB7; border-radius: 5px;',
+    defaultStyle: 'background-color: #FFFFFF; border-radius: 5px;',
   })
 
   //create editor for editing template
@@ -51,7 +51,7 @@ const popupEventListeners = () => {
       ['preview', 'print'],
     ],
     height: 370,
-    defaultStyle: 'background-color: #FDDEB7; border-radius: 5px;',
+    defaultStyle: 'background-color: #FFFFFF; border-radius: 5px;',
   })
   //shows add template modal
   addTemplateButton.addEventListener('click', () => addTemplateModal.showModal())
