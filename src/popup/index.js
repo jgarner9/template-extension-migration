@@ -1,5 +1,4 @@
 //<====================IMPORTS=====================>
-// import './index.css'
 import { loadTemplates } from '../controllers/loadTemplates'
 import { popupEventListeners } from './popupEventListeners'
 
