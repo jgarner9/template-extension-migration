@@ -9,7 +9,6 @@ import 'suneditor/dist/css/suneditor.min.css'
 //<====================STARTUP LOGIC================>
 //init load for display
 loadTemplates()
-popupEventListeners()
 
 //editor initiation
 const suneditorAddElement = suneditor.create('template-text-area', {

@@ -7,6 +7,7 @@ import copy_icon from '/Users/jgarner/Desktop/Programming/template-extension-mig
 const displayData = (data) => {
   //element variables
   const templateOptionsElement = document.getElementById('template-options')
+  const editTemplateModal = document.getElementById('edit-template-modal')
   const emptyTemplatesElement = document.getElementById('no-templates')
   const searchElement = document.getElementById('template-search')
 
