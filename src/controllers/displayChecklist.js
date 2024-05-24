@@ -4,11 +4,12 @@ const displayChecklist = (data) => {
     const checklistItem = document.createElement('div')
     const checklistText = document.createElement('h2')
     const checklistDone = document.createElement('button')
-    const checklistTrash = document.createElement('button')
 
     checklistText.textContent = item.content
 
-    checklistItem.append(checklistText, checklistTrash, checklistDone)
+    checklistDone.textContent = "Done"
+
+    checklistItem.append(checklistText, checklistDone)
     checklistOptions.append(checklistItem)
   })
   if (data.length === 0) {
