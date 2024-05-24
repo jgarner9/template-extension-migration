@@ -14,3 +14,7 @@
 body {
   background-color: var(--color-1);
 }
+
+button {
+  cursor: pointer;
+}

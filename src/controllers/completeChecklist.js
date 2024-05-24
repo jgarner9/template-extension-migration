@@ -1,9 +1,9 @@
-import { loadTemplates } from './loadTemplates'
+import { loadChecklist } from './loadChecklist'
 
-const deleteTemplate = (e) => {
+const completeChecklist = (e) => {
   //IDB Options
-  const dbName = 'template-data'
-  const storeName = 'templates'
+  const dbName = 'checklist-data'
+  const storeName = 'checklists'
   const version = 4
 
   //keypath selector
@@ -22,8 +22,8 @@ const deleteTemplate = (e) => {
 
     db.close()
 
-    loadTemplates()
+    loadChecklist()
   })
 }
 
-export { deleteTemplate }
+export { completeChecklist }

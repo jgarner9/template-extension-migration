@@ -1,13 +1,20 @@
+import { completeChecklist } from './completeChecklist'
+
 const displayChecklist = (data) => {
+  const checklistOptions = document.getElementById('checklist-options')
+
+  checklistOptions.replaceChildren([])
+
   data.forEach((item) => {
-    const checklistOptions = document.getElementById('checklist-options')
     const checklistItem = document.createElement('div')
     const checklistText = document.createElement('h2')
     const checklistDone = document.createElement('button')
 
     checklistText.textContent = item.content
 
-    checklistDone.textContent = "Done"
+    checklistDone.textContent = 'Done'
+    checklistDone.id = item.id
+    checklistDone.addEventListener('click', (e) => completeChecklist(e))
 
     checklistItem.append(checklistText, checklistDone)
     checklistOptions.append(checklistItem)
