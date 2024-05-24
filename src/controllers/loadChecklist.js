@@ -23,6 +23,7 @@ const loadChecklist = () => {
 
       db.close()
 
+      console.log(data)
       displayChecklist(data)
     })
   })
