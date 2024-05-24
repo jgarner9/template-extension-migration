@@ -1,4 +1,4 @@
-import { displayData } from "./displayData"
+import { displayData } from './displayData'
 
 const loadTemplates = () => {
   //IDB Options

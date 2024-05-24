@@ -1,7 +1,7 @@
 //<====================IMPORTS=====================>
-import { loadTemplates } from '../controllers/loadTemplates'
-import { addTemplate } from '../controllers/addTemplate'
-import { editTemplate } from '../controllers/editTemplate'
+import { loadTemplates } from '../controllers/templates/loadTemplates'
+import { addTemplate } from '../controllers/templates/addTemplate'
+import { editTemplate } from '../controllers/templates/editTemplate'
 import plugins from 'suneditor/src/plugins'
 import suneditor from 'suneditor'
 import 'suneditor/dist/css/suneditor.min.css'

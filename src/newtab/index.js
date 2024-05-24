@@ -1,8 +1,8 @@
 //<==================IMPORTS===================>
 import './index.css'
 import { loadTimezones } from '../controllers/loadTimezones.js'
-import { loadChecklist } from '../controllers/loadChecklist'
-import { addChecklist } from '../controllers/addChecklist'
+import { loadChecklist } from '../controllers/checklist/loadChecklist'
+import { addChecklist } from '../controllers/checklist/addChecklist'
 
 //<===============STARTUP LOGIC================>
 //load up current time and timezones, set update interval

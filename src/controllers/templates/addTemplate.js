@@ -1,4 +1,4 @@
-import { generateUID } from "./generateUID"
+import { generateUID } from "../generateUID"
 
 const addTemplate = (data, title) => {
   //IDB options
