@@ -6,10 +6,18 @@ const loadTimezones = () => {
   const pacificDaylightTime = document.getElementById('pacific-daylight-time')
 
   const currentTime = new Date()
-  const currentCDTTime = currentTime.toLocaleTimeString('en-US', { timeZone: 'America/Chicago' })
-  const currentMDTTime = currentTime.toLocaleTimeString('en-US', { timeZone: 'America/Denver' })
-  const currentMSTTIme = currentTime.toLocaleTimeString('en-US', { timeZone: 'America/Phoenix' })
-  const currentEDTTime = currentTime.toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
+  const currentCDTTime = currentTime.toLocaleTimeString('en-US', {
+    timeZone: 'America/Chicago',
+  })
+  const currentMDTTime = currentTime.toLocaleTimeString('en-US', {
+    timeZone: 'America/Phoenix',
+  })
+  const currentMSTTIme = currentTime.toLocaleTimeString('en-US', {
+    timeZone: 'America/Denver',
+  })
+  const currentEDTTime = currentTime.toLocaleTimeString('en-US', {
+    timeZone: 'America/New_York',
+  })
   const currentPDTTime = currentTime.toLocaleTimeString('en-US', {
     timeZone: 'America/Los_Angeles',
   })
