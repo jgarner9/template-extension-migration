@@ -3,6 +3,7 @@ import './index.css'
 import { loadTimezones } from '../controllers/loadTimezones.js'
 import { loadChecklist } from '../controllers/checklist/loadChecklist'
 import { addChecklist } from '../controllers/checklist/addChecklist'
+import { loadNotes } from '../controllers/notes/loadNotes'
 
 //<===============STARTUP LOGIC================>
 //load up current time and timezones, set update interval
@@ -11,6 +12,7 @@ setInterval(loadTimezones, 1000)
 
 //load checklist items in dashboard
 loadChecklist()
+loadNotes()
 
 //<==============EVENT LISTENERS==============>
 const addChecklistModal = document.getElementById('add-checklist-modal')
