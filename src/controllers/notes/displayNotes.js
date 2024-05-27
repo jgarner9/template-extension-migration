@@ -1,6 +1,7 @@
 import { deleteNote } from './deleteNote'
 import trash_icon from '../../assets/trash_icon.png'
 import edit_icon from '../../assets/edit_button.png'
+import { suneditorEditElement } from '../../newtab'
 
 const displayNotes = (data) => {
   //element variables
@@ -8,6 +9,8 @@ const displayNotes = (data) => {
   const editNoteModal = document.getElementById('edit-note-modal')
   const emptyNotesElement = document.getElementById('no-notes')
   const searchElement = document.getElementById('note-search')
+  const saveEditButton = document.querySelector('.save-edit-button')
+  const editNoteTitleInput = document.getElementById('edit-note-title-input')
 
   //empties the noteOptions object to be repopulated
   noteOptionsElement.replaceChildren([])
@@ -52,10 +55,10 @@ const displayNotes = (data) => {
       //edit button set up
       editNoteButton.setAttribute('class', 'edit-button')
       editNoteButton.setAttribute('id', note.id)
-      editNoteButton.addEventListener('click', () => {
+      editNoteButtonIcon.addEventListener('click', () => {
         editNoteModal.showModal()
-        saveButton.id = note.id
-        editnoteTitleInput.value = note.title
+        saveEditButton.id = note.id
+        editNoteTitleInput.value = note.title
         suneditorEditElement.setContents(note.content)
       })
       editNoteButtonIcon.setAttribute('src', edit_icon)
@@ -63,13 +66,7 @@ const displayNotes = (data) => {
 
       //append elements to note model, append to note options
       noteOptionsElement.append(noteElement)
-      noteElement.append(
-        deleteNoteButton,
-        editNoteButton,
-        copynoteButton,
-        noteTitleElement,
-        noteTextElement,
-      )
+      noteElement.append(deleteNoteButton, editNoteButton, noteTitleElement, noteTextElement)
     }
   })
 

@@ -5,6 +5,7 @@ import { editTemplate } from '../controllers/templates/editTemplate'
 import plugins from 'suneditor/src/plugins'
 import suneditor from 'suneditor'
 import 'suneditor/dist/css/suneditor.min.css'
+import './index.css'
 
 //<====================STARTUP LOGIC================>
 //init load for display

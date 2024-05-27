@@ -19,15 +19,15 @@ const editNote = (e, title, contents) => {
     const transaction = db.transaction(storeName, 'readwrite')
 
     const objectStore = transaction.objectStore(storeName)
-    const template = objectStore.get(idKeypath)
+    const note = objectStore.get(idKeypath)
 
-    template.addEventListener('success', (e) => {
-      const template = e.target.result
+    note.addEventListener('success', (e) => {
+      const note = e.target.result
 
-      template.title = title
-      template.content = contents
+      note.title = title
+      note.content = contents
 
-      objectStore.put(template)
+      objectStore.put(note)
     })
 
     db.close()
