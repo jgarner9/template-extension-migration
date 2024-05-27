@@ -23,7 +23,7 @@ const loadNotes = () => {
 
       db.close()
 
-      displayData(data)
+      displayNotes(data)
     })
   })
 
