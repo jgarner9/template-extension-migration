@@ -23,6 +23,7 @@ const editNote = (e, title, contents) => {
 
     note.addEventListener('success', (e) => {
       const note = e.target.result
+      console.log(e)
 
       note.title = title
       note.content = contents

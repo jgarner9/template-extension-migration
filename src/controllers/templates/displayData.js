@@ -3,6 +3,7 @@ import { deleteTemplate } from './deleteTemplate'
 import trash_icon from '/Users/jgarner/Desktop/Programming/template-extension-migration/src/assets/trash_icon.png'
 import edit_icon from '/Users/jgarner/Desktop/Programming/template-extension-migration/src/assets/edit_button.png'
 import copy_icon from '/Users/jgarner/Desktop/Programming/template-extension-migration/src/assets/copy_button.png'
+import { suneditorEditTemplateElement } from '../../popup'
 
 const displayData = (data) => {
   //element variables
@@ -10,6 +11,8 @@ const displayData = (data) => {
   const editTemplateModal = document.getElementById('edit-template-modal')
   const emptyTemplatesElement = document.getElementById('no-templates')
   const searchElement = document.getElementById('template-search')
+  const saveButton = document.querySelector('.save-edit-button')
+  const editTemplateTitleInput = document.getElementById('edit-template-title-input')
 
   //empties the templateOptions object to be repopulated
   templateOptionsElement.replaceChildren([])
@@ -60,7 +63,7 @@ const displayData = (data) => {
         editTemplateModal.showModal()
         saveButton.id = template.id
         editTemplateTitleInput.value = template.title
-        suneditorEditElement.setContents(template.content)
+        suneditorEditTemplateElement.setContents(template.content)
       })
       editTemplateButtonIcon.setAttribute('src', edit_icon)
       editTemplateButton.append(editTemplateButtonIcon)

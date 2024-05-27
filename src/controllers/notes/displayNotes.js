@@ -9,7 +9,7 @@ const displayNotes = (data) => {
   const editNoteModal = document.getElementById('edit-note-modal')
   const emptyNotesElement = document.getElementById('no-notes')
   const searchElement = document.getElementById('note-search')
-  const saveEditButton = document.querySelector('.save-edit-button')
+  const saveEditButton = document.querySelector('.note-save-edit-button')
   const editNoteTitleInput = document.getElementById('edit-note-title-input')
 
   //empties the noteOptions object to be repopulated
@@ -56,10 +56,10 @@ const displayNotes = (data) => {
       editNoteButton.setAttribute('class', 'edit-button')
       editNoteButton.setAttribute('id', note.id)
       editNoteButtonIcon.addEventListener('click', () => {
-        editNoteModal.showModal()
         saveEditButton.id = note.id
         editNoteTitleInput.value = note.title
         suneditorEditElement.setContents(note.content)
+        editNoteModal.showModal()
       })
       editNoteButtonIcon.setAttribute('src', edit_icon)
       editNoteButton.append(editNoteButtonIcon)

@@ -30,7 +30,7 @@ const suneditorAddElement = suneditor.create('template-text-area', {
 })
 
 //create editor for editing template
-const suneditorEditElement = suneditor.create('template-edit-text-area', {
+const suneditorEditTemplateElement = suneditor.create('template-edit-text-area', {
   plugins: plugins,
   buttonList: [
     ['font', 'fontSize', 'formatBlock'],
@@ -46,6 +46,8 @@ const suneditorEditElement = suneditor.create('template-edit-text-area', {
   height: 370,
   defaultStyle: 'background-color: #FFFFFF; border-radius: 5px;',
 })
+
+export { suneditorEditTemplateElement }
 
 //<====================EVENT LISTENERS==============>
 //element variables
@@ -102,12 +104,12 @@ addTemplateModalButton.addEventListener('click', () => {
 //saves template after edit
 saveButton.addEventListener('click', (e) => {
   if (editTemplateTitleInput.value !== '') {
-    editTemplate(e, editTemplateTitleInput.value, suneditorEditElement.getContents())
+    editTemplate(e, editTemplateTitleInput.value, suneditorEditTemplateElement.getContents())
     editTemplateModal.close()
 
     //reset modal contents
     editTemplateTitleInput.value = ''
-    suneditorEditElement.setContents('')
+    suneditorEditTemplateElement.setContents('')
   } else {
     //animate the missing title error if title is empty
     missingTitleEditError.animate([{ opacity: '0%' }, { opacity: '100%' }], {
@@ -129,7 +131,7 @@ closeEditButton.addEventListener('click', () => {
 
   //reset modal contents
   editTemplateTitleInput.value = ''
-  suneditorEditElement.setContents('')
+  suneditorEditTemplateElement.setContents('')
 })
 
 //filter through list to display
