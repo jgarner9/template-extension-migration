@@ -1,3 +1,0 @@
-const getItemIDB = () => {}
-
-export { getItemIDB }

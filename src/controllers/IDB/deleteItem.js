@@ -1,3 +1,0 @@
-const deleteItem = () => {}
-
-export { deleteItem }
