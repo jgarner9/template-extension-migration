@@ -14,7 +14,7 @@ const addItemIDB = (request, storeName, data) => {
 
     const objectStore = db.createObjectStore(storeName, { keyPath: 'id' })
 
-    objectStore.transaction.oncomplete = (e) => {
+    objectStore.transaction.oncomplete = () => {
       const objectStore = db.transaction(storeName, 'readwrite').objectStore(storeName)
 
       objectStore.add(data)
