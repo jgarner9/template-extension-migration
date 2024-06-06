@@ -1,9 +1,9 @@
 {
   "name": "template-extension-migration",
   "displayName": "template-extension-migration",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Jason Garner",
-  "description": "",
+  "description": "Simple extension to make template responses for professional emails/texts with rich text capability for fancy formatting, powered by SunEditor.",
   "type": "module",
   "license": "MIT",
   "keywords": [
