@@ -1,0 +1,3 @@
+const requestOpenIDB = () => {}
+
+export { requestOpenIDB }
